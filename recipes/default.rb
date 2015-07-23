@@ -16,8 +16,10 @@
 # limitations under the License.
 
 if node[:platform] == "windows"
-  include_recipe 'git'
+  # include_recipe 'git'
   include_recipe 'winbox::chocolatey_install'
+  include_recipe 'winbox::powershell4'
+  include_recipe 'winbox::sysinternals'
   include_recipe 'winbox::powershell_dev'
   include_recipe 'winbox::readline'
   include_recipe 'winbox::editor'
