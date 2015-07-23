@@ -35,6 +35,7 @@ prerequisites installed:
 * `git`: You can install `git` for Windows by visiting
   [Github](http://msysgit.github.io/) in case you don't already have a
   package manager.
+* `Powershell 3.0` (or greater).
 
 ## Local workstation configuration
 If your goal is to configure a local workstation (possibly the one
