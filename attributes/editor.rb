@@ -1,1 +1,1 @@
-default['winbox']['editor'] = :vscode
+default['winbox']['editor'] = :vim
