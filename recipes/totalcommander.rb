@@ -34,11 +34,6 @@ if ($LASTEXITCODE -ne 0)
 }
   EOH
   only_if '(choco list --local-only | select-string -pattern totalcommander) -eq $null'
-end
-
-ruby_block 'check_tc_config' do
-  block {}
-  not_if { ::File.exist? tc_config_file }
   notifies :create, "cookbook_file[#{tc_config_file}]", :immediately
 end
 
