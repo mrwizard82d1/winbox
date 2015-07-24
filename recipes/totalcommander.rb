@@ -17,15 +17,28 @@
 
 include_recipe 'winbox::chocolatey_install'
 
-powershell_script 'sysinternals' do
+tc_config_file = "#{ENV['AppData']}/GHISLER/wincmd.ini"
+
+cookbook_file tc_config_file do
+  action :nothing
+  source 'wincmd.ini'
+end
+
+powershell_script 'totalcommander' do
   code <<-EOH
-chocolatey install sysinternals -y
+chocolatey install totalcommander -y
 if ($LASTEXITCODE -ne 0)
 {
   $LASTEXITCODE = 0
-  chocolatey install sysinternals -y
+  chocolatey install totalcommander -y
 }
   EOH
   only_if '(choco list --local-only | select-string -pattern totalcommander) -eq $null'
+end
+
+ruby_block 'check_tc_config' do
+  block {}
+  not_if { ::File.exist? tc_config_file }
+  notifies :create, "cookbook_file[#{tc_config_file}]", :immediately
 end
 
