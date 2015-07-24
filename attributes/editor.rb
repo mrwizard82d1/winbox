@@ -1,1 +1,1 @@
-default['winbox']['editor'] = :vim
+default['winbox']['editor'] = :atom
