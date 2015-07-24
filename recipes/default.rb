@@ -21,7 +21,8 @@ if node[:platform] == "windows"
   include_recipe 'winbox::powershell4'
   include_recipe 'winbox::sysinternals'
   include_recipe 'winbox::powershell_dev'
-  include_recipe 'winbox::readline'
+  # encountering permission issues on VM
+  # include_recipe 'winbox::readline'
   include_recipe 'winbox::editor'
   include_recipe 'winbox::console'
 end
