@@ -1,5 +1,5 @@
 # Cookbook Name:: winbox
-# Recipe:: sysinternals
+# Recipe:: totalcommander
 #
 # Copyright 2015, Larry Jones
 #
@@ -17,15 +17,15 @@
 
 include_recipe 'winbox::chocolatey_install'
 
-powershell_script 'totalcommander' do
+powershell_script 'sysinternals' do
   code <<-EOH
-chocolatey install totalcommander  -y
+chocolatey install sysinternals -y
 if ($LASTEXITCODE -ne 0)
 {
   $LASTEXITCODE = 0
-  chocolatey install totalcommander  -y
+  chocolatey install sysinternals -y
 }
   EOH
-  only_if '(choco list --local-only | select-string -pattern totalcommander ) -eq $null'
+  only_if '(choco list --local-only | select-string -pattern totalcommander) -eq $null'
 end
 
