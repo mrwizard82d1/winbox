@@ -17,11 +17,11 @@
 
 include_recipe 'winbox::chocolatey_install'
 
-conemu_config_file = "#{ENV['ProgramW6432']}/conemu/conemu.xml"
+conemu_config_file = "#{ENV['ProgramW6432']}/conemu/ConEmu.xml"
 
 cookbook_file conemu_config_file do
   action :nothing
-  source 'conemu.xml'
+  source 'ConEmu.xml'
 end
 
 powershell_script 'conemu' do
@@ -42,13 +42,11 @@ ruby_block 'check_conemu_config' do
   notifies :create, "cookbook_file[#{conemu_config_file}]", :immediately
 end
 
-
 # chocolatey 'psget'
-
 powershell_script 'psget' do
   code 'chocolatey install psget -y'
   only_if <<-EOH
-if ( $env:username -eq 'system' -or $env:username.endswith('$'))
+if ( ($env:username -eq 'system') -or $env:username.endswith('$') -or ($PSVersionTable.PSVersion.Major -lt 5) )
 {
   exit 1
 }
@@ -57,3 +55,23 @@ if ( $env:username -eq 'system' -or $env:username.endswith('$'))
 EOH
 end
 
+# install posh-git
+powershell_script 'posh-git' do
+  code <<-EOH
+# Bootstrap provider
+Get-PackageProvider -Name NuGet -ForceBootstrap
+
+# Install post-git
+Install-Module posh-git -confirm:$false -force
+
+# Remove the un-needed example posh-git profile include
+if ( test-path $PROFILE )
+{
+(Get-Content $PROFILE) -notmatch "posh-git" | out-file $PROFILE
+}
+EOH
+  only_if <<-EOH
+(get-module -listavailable posh-git) -eq $null -and ($PSVersionTable.PSVersion.Major -ge 5)
+
+EOH
+end

@@ -16,7 +16,6 @@
 # limitations under the License.
 
 powershell_script 'ExecutionPolicyUnrestricted' do
-  architecture :x86_64
   code <<-EOH
 powershell -noprofile -executionpolicy bypass -command {set-executionpolicy unrestricted -force -scope localmachine}
 exit 0
@@ -25,7 +24,7 @@ EOH
 end
 
 powershell_script 'ExecutionPolicyUnrestrictedX86' do
-  architecture :i386
+  architecture :i386  # Handle 32-bit Powershell (no-op if OS is 32-bit)
   code <<-EOH
 powershell -noprofile -executionpolicy bypass -command {set-executionpolicy unrestricted -force -scope localmachine}
 exit 0
@@ -59,7 +58,7 @@ end
 # because the file resource can't handle remote profile
 # paths (i.e. UNC paths) as a destination
 powershell_script profile do
-  code "'. ~/winbox-ps-profile.ps1' > '#{profile}'"
-  not_if "test-path '#{profile}'"
+  code "'. ~/winbox-ps-profile.ps1' >> '#{profile}'"
+  not_if "if ((test-path '#{profile}') -and ((cat '#{profile}' | Select-String winbox) -ne $null)) { $true } else { $false }"
 end
 
