@@ -64,7 +64,17 @@ if node['platform'] == "windows"
   when 'vim'
     editor_executable = 'vim'
     powershell_script 'install_vim' do
-      code 'chocolatey install vim -y'
+			# The following code fails on Windows 10 / chocolatey 0.10.0. The 
+			# error indicates that "...missing package checksums are not 
+			# allowed...." The recommendation was to "Please ask the maintainer
+			# to add checksums to this package."
+			# 
+			# I have chosen not to take this action at this time but instead to
+			# add the `--allow-empty-checksums` options to the install command.
+			# Although this choice is less secure, it is faster, and I believe
+			# the risk of a "bad guy" subsituting a bad package for these 
+			# downloads are small.
+      code 'chocolatey install vim -y --allow-empty-checksums'
       not_if 'get-command vim *>&1 | out-null ; $?'
     end
   else
